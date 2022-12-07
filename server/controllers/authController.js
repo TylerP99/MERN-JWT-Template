@@ -38,6 +38,9 @@ const registerUser = AsyncHandler( async (req, res) => {
     const refreshToken = genRefreshToken({id: user._id});
     const accessToken = genAccessToken({id: user._id});
 
+    // Store refresh token
+    await RefreshToken.create({token: refreshToken});
+
     // Respond with tokens and user info
     res.status(201).json({
         user: {
@@ -49,7 +52,50 @@ const registerUser = AsyncHandler( async (req, res) => {
 });
 
 const authenticateUser = AsyncHandler( async (req, res) => {
-    res.json({msg: "Authenticate"});
+
+    // Get credentials from request body
+    const {email, password} = req.body;
+
+
+    // Validate fields (check if filled)
+    const errors = [];
+
+    if(!email) errors.push("Email field required");
+    if(!password) errors.push("Password field required");
+
+    if(errors.length) return res.status(400).json(errors);
+
+    // Get user from database
+    const user = await User.findOne({email});
+
+    // If no user, error
+    if(!user) errors.push("A user with that email does not exist");
+
+    if(errors.length) return res.status(400).json(errors);
+
+    // Compare provided password with entered password
+    const match = await bcrypt.compare(password, user.password);
+
+    // If not matching, error
+    if(!match) errors.push("That password is incorrect");
+
+    if(errors.length) return res.status(400).json(errors);
+
+    // Generate tokens
+    const refreshToken = genRefreshToken({id: user._id});
+    const accessToken = genAccessToken({id: user._id});
+
+    // Store refresh token
+    await RefreshToken.create({token: refreshToken});
+
+    // Respond with user info and tokens
+    res.status(200).json({
+        user: {
+            email: user.email
+        },
+        access: accessToken,
+        refresh: refreshToken,
+    });
 });
 
 const refreshToken = AsyncHandler( async (req, res) => {
