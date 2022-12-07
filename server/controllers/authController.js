@@ -99,7 +99,33 @@ const authenticateUser = AsyncHandler( async (req, res) => {
 });
 
 const refreshToken = AsyncHandler( async (req, res) => {
-    res.json({msg: "Refresh"});
+
+    // Check for refresh token in authorization header, if no token, respond
+    if(!req.headers.authorization?.startsWith("Bearer")) return res.status(401).json(["No refresh token"]);
+
+    // Verify token
+    const token = req.headers.authorization.split(" ")[1];
+
+    // Check if token is in db before allowing its use
+    const dbToken = await RefreshToken.findOne({token});
+
+    if(!dbToken) return res.status(401).json(["Token revoked"]);
+
+    jwt.verify( token, process.env.JWT_REFRESH_SECRET, 
+        async (err, decoded) => {
+            // If not verified, respond
+            if(err) return res.status(401).json(["Unauthorized, bad token"]);
+
+            const user = await User.findById(decoded.id);
+
+            // Gen access
+            const accessToken = genAccessToken({id: user._id});
+
+            // Respond with access
+            res.json({access: accessToken});
+        }
+    );
+
 });
 
 const logoutUser = AsyncHandler( async (req, res) => {
