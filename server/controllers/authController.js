@@ -129,6 +129,18 @@ const refreshToken = AsyncHandler( async (req, res) => {
 });
 
 const logoutUser = AsyncHandler( async (req, res) => {
+
+    // Later, will destroy cookie here
+
+    // For now, just delete refresh token from db
+    const token = req.body.refresh;
+
+    if(!token) return res.status(400).json(["No session detected"]);
+
+    const dbToken = await RefreshToken.findOneAndDelete({token});
+
+    if(!dbToken) return res.status(400).json(["No session detected"]);
+
     res.json({msg: "Logout"});
 });
 
