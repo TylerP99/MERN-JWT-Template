@@ -1,5 +1,6 @@
 const AsyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 
 const User = require("../models/User");
@@ -33,7 +34,18 @@ const registerUser = AsyncHandler( async (req, res) => {
     // Create user in database
     const user = await User.create({email, password: hashedPassword});
 
-    res.json(user);
+    // Create JWT tokens
+    const refreshToken = genRefreshToken({id: user._id});
+    const accessToken = genAccessToken({id: user._id});
+
+    // Respond with tokens and user info
+    res.status(201).json({
+        user: {
+            email: user.email,
+        },
+        access: accessToken,
+        refresh: refreshToken, // This will go into httpOnly cookie later
+    })
 });
 
 const authenticateUser = AsyncHandler( async (req, res) => {
@@ -47,6 +59,22 @@ const refreshToken = AsyncHandler( async (req, res) => {
 const logoutUser = AsyncHandler( async (req, res) => {
     res.json({msg: "Logout"});
 });
+
+
+
+const genRefreshToken = (payload) => {
+    return jwt.sign(payload,
+        process.env.JWT_REFRESH_SECRET, 
+        {expiresIn: "7d"}
+    );
+}
+
+const genAccessToken = (payload) => {
+    return jwt.sign(payload,
+        process.env.JWT_ACCESS_SECRET, 
+        {expiresIn: "15m"}
+    );
+}
 
 module.exports = {
     registerUser,
