@@ -6,6 +6,9 @@ const PORT = process.env.PORT || 3500;
 
 const app = express();
 
+// Connect to db
+require("./config/connectDB")();
+
 // Request Middleware
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
