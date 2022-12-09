@@ -2,9 +2,14 @@ import {useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
 
+import {registerUser} from ""
+
 import {FaUser} from "react-icons/fa";
 
 function Register() {
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -20,6 +25,24 @@ function Register() {
 
   const onSubmit = (e) => {
     e.preventDefault();
+
+    const errors = [];
+
+    if(!email) errors.push("Email field is required");
+
+    if(!password) errors.push("Password is required");
+
+    if(password !== password2) errors.push("Passwords must match");
+
+    if(errors.length) return;
+
+    const userData = {
+      email,
+      password,
+      password2,
+    }
+
+    dispatch(registerUser(userData));
   }
 
   return (
