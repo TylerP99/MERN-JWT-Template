@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { FaUserAlt } from "react-icons/fa";
 
 import ProtectedResource from "./pages/ProtectedResource";
 import Login from './pages/Login';
