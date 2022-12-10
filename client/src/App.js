@@ -14,10 +14,12 @@ function App() {
       <Router>
         <Navigation />
         <Routes>
-
-          <Route path='/' element={<ProtectedResource/>} />
+          {/*Public Routes*/}
           <Route path='/login' element={<Login/>} />
           <Route path='/register' element={<Register/>} />
+
+          {/*Protected Routes*/}
+          <Route path='/' element={<ProtectedResource/>} />
 
         </Routes>
       </Router>

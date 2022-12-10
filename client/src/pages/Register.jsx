@@ -2,7 +2,6 @@ import {useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
 
-import {registerUser} from ""
 
 import {FaUser} from "react-icons/fa";
 
@@ -42,7 +41,7 @@ function Register() {
       password2,
     }
 
-    dispatch(registerUser(userData));
+    //dispatch(registerUser(userData));
   }
 
   return (
