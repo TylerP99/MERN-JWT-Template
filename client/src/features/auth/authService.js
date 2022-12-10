@@ -10,16 +10,25 @@ const registerUser = async (userData) => {
         localStorage.setItem("access", JSON.stringify(response.data.access));
         localStorage.setItem("refresh", JSON.stringify(response.data.refresh));
     }
+
+    return response.data;
 }
 
 // User Login/Authentication Request
 const loginUser = async (userData) => {
+    const response = await axios.post(API_URL + "authenticate", userData);
 
+    if(response.data) {
+        localStorage.setItem("access", JSON.stringify(response.data.access));
+        localStorage.setItem("refresh", JSON.stringify(response.data.refresh));
+    }
+
+    return response.data;
 }
 
 // Refresh Access Token
 const refreshAccess = async () => {
-
+    
 }
 
 // User Logout Function
