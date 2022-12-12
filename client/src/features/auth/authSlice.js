@@ -9,3 +9,56 @@ const initialState = {
     isLoading: null,
     message: "",
 }
+
+
+export const register = createAsyncThunk("auth/register", 
+    async (user, thunkAPI) => {
+        try {
+            return await authService.registerUser(user);
+        }
+        catch(e) {
+            console.error(e);
+            const message = e.response?.data?.message;
+            thunkAPI.rejectWithValue(message);
+        }
+    }
+);
+
+export const login = createAsyncThunk("auth/login", 
+    async (user, thunkAPI) => {
+        try {
+            return await authService.loginUser(user);
+        }
+        catch(e) {
+            console.error(e);
+            const message = e.response?.data?.message;
+            thunkAPI.rejectWithValue(message);
+        }
+    }
+);
+
+export const refresh = createAsyncThunk("auth/register", 
+    async (user, thunkAPI) => {
+        try {
+            return await authService.refreshAccess(user);
+        }
+        catch(e) {
+            console.error(e);
+            const message = e.response?.data?.message;
+            thunkAPI.rejectWithValue(message);
+        }
+    }
+);
+
+export const logout = createAsyncThunk("auth/register", 
+    async (user, thunkAPI) => {
+        try {
+            return await authService.logoutUser(user);
+        }
+        catch(e) {
+            console.error(e);
+            const message = e.response?.data?.message;
+            thunkAPI.rejectWithValue(message);
+        }
+    }
+);
