@@ -62,3 +62,20 @@ export const logout = createAsyncThunk("auth/register",
         }
     }
 );
+
+export const authSlice = createSlice({
+    name: "auth",
+    initialState,
+    reducers: {
+        reset: (state) => {
+            state.isError = null;
+            state.isLoading = null;
+            state.isSuccess = null;
+            state.message = null;
+        }
+    },
+    extraReducers: (builder) => {},
+});
+
+export const {reset} = authSlice.actions;
+export default authSlice.reducer;
